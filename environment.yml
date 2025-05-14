@@ -1,0 +1,14 @@
+name: geodiffgrid
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
+  - xarray
+  - pandas
+  - pooch
+  - seaborn
+  - cmcrameri
+  - pip:
+      - wget
