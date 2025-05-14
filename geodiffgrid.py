@@ -20,20 +20,20 @@ def get_colormap(name):
         )
 
 
-def create_grid_plot(df, params,output_path, year, variable, unit):
-    """Create a grid plot for variable differences between two locations."""
+def create_grid_plot(df, params,output_path):
+    """"""
     fig, ax = plt.subplots(figsize=(16, 8))
-    plt.title(
-        f"{params['title']} - Year {year}\n"
-        "Hourly data",
-        fontsize=16
-    )
+    if params["year"] is not None:
+        title = f"{params['title']} - Year {params['year']}\n Hourly data"
+    else:
+        title = f"{params['title']}\n Hourly data"
+    plt.title(title, fontsize=16)
     sns.heatmap(
         df,
         cmap=params["cmap"],
         vmin=params["vmin"],
         vmax=params["vmax"],
-        cbar_kws={"label": f"{variable} ({unit})"},
+        cbar_kws={"label": f"{params['variable']} ({params['unit']})"},
         ax=ax
     )
     ax.set_ylabel("Month of the year", fontsize=16)
@@ -49,7 +49,7 @@ def main():
     parser.add_argument("--location1", default="Location1", help="First location name (e.g., Sydney)")
     parser.add_argument("--location2", default="Location2", help="Second location name (e.g., Hauketo)")
     parser.add_argument("--title", default="Location Comparison", help="Custom title for the plot (e.g., Sydney vs. Hauketo NOx Comparison)")
-    parser.add_argument("--year", type=int, default=1950, help="Year of the data (e.g., 1950)")
+    parser.add_argument("--year", type=int, default=None, help="Year of the data (e.g., 1950)")
     parser.add_argument("--variable", default="Difference", help="Name of the variable (e.g., NOx Difference, Temperature Difference)")
     parser.add_argument("--unit", default="units", help="Unit of the variable (e.g., µg/m³, °C)")
     parser.add_argument("--vmin", default=None, help="minimum value for plotting")
@@ -65,6 +65,9 @@ def main():
         "vmin": args.vmin,
         "vmax": args.vmax,
         "cmap": get_colormap(args.cmap),
+        "year": args.year, 
+        "variable": args.variable, 
+        "unit": args.unit,
         "title": args.title
     }
 
@@ -92,7 +95,7 @@ def main():
 
     # Generate grid plot
     output_path = args.output
-    create_grid_plot(df, params, output_path, args.year, args.variable, args.unit)
+    create_grid_plot(df, params, output_path)
 
 if __name__ == '__main__':
     main()
